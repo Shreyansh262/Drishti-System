@@ -1,0 +1,7 @@
+onlyBuiltDependencies:
+  - '@mongodb-js/zstd'
+  - cpu-features
+  - kerberos
+  - mongodb-client-encryption
+  - sharp
+  - ssh2

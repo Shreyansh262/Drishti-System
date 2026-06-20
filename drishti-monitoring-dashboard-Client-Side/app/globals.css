@@ -1,0 +1,286 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Existing animations from your global.css */
+@keyframes fade-in-out {
+  0% { opacity: 0; transform: translateY(-5px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(10px); }
+}
+
+.animate-fade-in-out {
+  animation: fade-in-out 60s ease-in-out forwards;
+}
+
+@keyframes pulse-slight {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+  50% { transform: scale(1.05) rotate(2deg); opacity: 0.8; }
+}
+
+.animate-pulse-slight {
+  animation: pulse-slight 8s ease-in-out infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+.animation-delay-6000 {
+  animation-delay: 6s;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+
+    /* Custom Theme Colors (e.g., for 'blue' theme) */
+    --theme-primary: 217 91% 60%; /* blue-500 */
+    --theme-secondary: 262 83% 58%; /* purple-500 */
+  }
+
+  .dark {
+    --background: 222.2 47.4% 11.2%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 47.4% 11.2%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 47.4% 11.2%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+
+    /* Custom Theme Colors (for 'dark' variants of custom themes) */
+    --theme-primary: 217 91% 40%; /* darker blue for dark mode */
+    --theme-secondary: 262 83% 40%; /* darker purple for dark mode */
+  }
+
+  /* Example of theme-specific light/dark colors if needed more granularity */
+  .theme-blue {
+    --theme-primary: 217 91% 60%; /* blue-500 */
+    --theme-secondary: 262 83% 58%; /* purple-500 */
+  }
+
+  .dark .theme-blue {
+    --theme-primary: 217 91% 40%; /* darker blue for dark mode */
+    --theme-secondary: 262 83% 40%; /* darker purple for dark mode */
+  }
+}
+
+/* Ensure body uses background and foreground colors */
+body {
+  @apply bg-background text-foreground;
+}
+
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.4s ease-out;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted)); /* Use muted for track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary)); /* Use primary for thumb */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary-foreground)); /* Darker primary on hover */
+}
+
+/* --- NEW ADDITIONS FOR GAMIFIED BACKGROUND AND UI --- */
+
+/* Keyframes for the gamified background animation */
+@keyframes techGridMovement {
+  0% {
+    background-position: 0% 0%, 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%, 100% 100%; /* Moves diagonally */
+  }
+}
+
+@keyframes pulse-slight {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+  50% { transform: scale(1.05) rotate(2deg); opacity: 0.8; }
+}
+
+@keyframes ping-slow {
+  0% {
+    transform: scale(0.2);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(0.2);
+    opacity: 0.8;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animate-pulse-slight {
+  animation: pulse-slight 2s infinite ease-in-out;
+}
+
+.animate-ping-slow {
+  animation: ping-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+
+/* Gamified Animated Background */
+.animated-tech-grid-background {
+  background-color: hsl(var(--background)); /* Base background color */
+  background-image:
+    linear-gradient(to right, hsla(var(--theme-primary), 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, hsla(var(--theme-primary), 0.1) 1px, transparent 1px);
+  background-size: 50px 50px; /* Size of grid cells */
+  animation: techGridMovement 60s linear infinite; /* Adjust speed as needed */
+  opacity: 0.3; /* Make it subtle */
+}
+
+.dark .animated-tech-grid-background {
+    background-image:
+        linear-gradient(to right, hsla(var(--theme-primary), 0.15) 1px, transparent 1px),
+        linear-gradient(to bottom, hsla(var(--theme-primary), 0.15) 1px, transparent 1px);
+    opacity: 0.4;
+}
+
+/* Utility for text shadow */
+.drop-shadow-md {
+  text-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Custom theme color utility classes (for use on elements that need the theme color) */
+.theme-card-bg {
+    background-color: hsl(var(--theme-primary));
+}
+.theme-text-color {
+    color: hsl(var(--theme-primary));
+}
+.theme-button-bg {
+    background-color: hsl(var(--theme-primary));
+}
+/* You might want a gradient version for buttons */
+.theme-button-gradient {
+    background: linear-gradient(to right, hsl(var(--theme-primary)), hsl(var(--theme-secondary)));
+}
+.theme-button-gradient:hover {
+    background: linear-gradient(to right, hsl(var(--theme-primary) / 0.9), hsl(var(--theme-secondary) / 0.9));
+}

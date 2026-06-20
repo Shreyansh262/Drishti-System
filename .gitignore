@@ -1,0 +1,31 @@
+# ───────────────────────────────────────────────────────────────
+# Drishti monorepo — root .gitignore
+# (each app folder also has its own .gitignore; those still apply)
+# ───────────────────────────────────────────────────────────────
+
+# Local backups of the old per-app git repos (kept for reference, NOT tracked).
+# The corresponding GitHub repos remain intact; this is just a local safety copy.
+.git-backups-old-repos/
+
+# Dependencies & build output (belt-and-suspenders; app .gitignores also cover these)
+**/node_modules/
+**/.next/
+**/out/
+**/build/
+**/dist/
+
+# Secrets — never track real env files (but DO keep .env.example templates)
+**/.env
+**/.env.local
+**/.env*.local
+
+# Logs & misc
+**/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
