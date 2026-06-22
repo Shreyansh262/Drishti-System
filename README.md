@@ -1,121 +1,138 @@
-# 🚗 Drishti (दृष्टि) — Vehicle Safety Monitoring System
+# Drishti — Vehicle Safety Monitoring System
 
-> An end-to-end IoT telemetry platform: an in-vehicle device streams driver-safety
-> sensor data to a cloud API, which stores it in a database and serves it to a live
-> web dashboard and an admin panel.
+Drishti (Sanskrit for *"vision"*) is an end-to-end IoT telemetry platform for
+real-time driver-safety monitoring. An in-vehicle device streams sensor data to a
+cloud API, which persists it to a database and serves it to a live driver dashboard
+and an administrative panel.
 
-**Drishti** ("vision" in Sanskrit) monitors driver safety in real time — alcohol
-level, drowsiness, road visibility, speed, and GPS — flags unsafe events as
-**incidents**, and computes a live **driver safety score**.
+The system tracks alcohol level, driver drowsiness, road visibility, speed, and GPS
+position, automatically flags unsafe conditions as **incidents**, and derives a live
+**driver safety score**.
 
-The whole stack runs on **$0 of infrastructure** (MongoDB Atlas free tier + Vercel
-free tier + OpenStreetMap), and ships with a **device simulator** so it demos live
+The entire stack runs on free-tier infrastructure (MongoDB Atlas, Vercel, and
+OpenStreetMap) and ships with a device simulator so it can be demonstrated end-to-end
 without any physical hardware.
 
----
+## Features
 
-## 🧭 Architecture
+- **Real-time telemetry ingestion** via an authenticated HTTP endpoint.
+- **Automatic incident detection** when a reading crosses a safety threshold
+  (high alcohol, drowsiness, low visibility, or overspeeding).
+- **Driver dashboard** with a live safety score, sensor cards, map-based location,
+  and incident alerts.
+- **Admin panel** for managing support tickets, complaints, feedback, and per-vehicle
+  history.
+- **Hardware-optional**: a Node.js simulator reproduces the exact device data path;
+  reference ESP32 firmware is included for real deployments.
+
+## Architecture
 
 ```
- ┌─────────────────────┐        HTTP POST (JSON)        ┌──────────────────────┐
- │  ESP32 + sensors     │  ───────────────────────────▶ │   POST /api/ingest    │
- │  (or simulator.js)   │   x-ingest-key: <secret>      │   (Next.js route)     │
- └─────────────────────┘                                └──────────┬───────────┘
+ ┌──────────────────────┐       HTTP POST (JSON)        ┌──────────────────────┐
+ │  ESP32 + sensors     │  ──────────────────────────▶  │   POST /api/ingest    │
+ │  (or simulator.js)   │     x-ingest-key: <secret>    │   (Next.js route)     │
+ └──────────────────────┘                               └──────────┬───────────┘
    MQ-3 alcohol · camera (drowsiness/visibility)                   │ writes
    OBD-II GPS + speed                                              ▼
                                                         ┌──────────────────────┐
-                                                        │   MongoDB Atlas        │
-                                                        │  alcohol · visibility  │
-                                                        │  drowsiness · obd      │
-                                                        │  incidents · tickets…  │
+                                                        │     MongoDB Atlas     │
+                                                        │  alcohol · visibility │
+                                                        │  drowsiness · obd     │
+                                                        │  incidents · tickets… │
                                                         └──────────┬───────────┘
-                                          reads (polled every ~8s) │
-                            ┌─────────────────────────────────────┴───────────┐
-                            ▼                                                   ▼
-                ┌────────────────────────┐                        ┌────────────────────────┐
-                │  Driver Dashboard       │                        │  Admin Panel            │
-                │  live score, map, alerts│                        │ tickets/complaints/…    │
-                └────────────────────────┘                        └────────────────────────┘
+                                       reads (polled ~8s)          │
+                          ┌─────────────────────────────────────────┴──────────┐
+                          ▼                                                      ▼
+              ┌────────────────────────┐                       ┌────────────────────────┐
+              │   Driver Dashboard     │                       │      Admin Panel       │
+              │ live score, map, alerts│                       │ tickets/complaints/... │
+              └────────────────────────┘                       └────────────────────────┘
 ```
 
-**Data flow:** device → `/api/ingest` → MongoDB → read APIs → dashboards.
-The ingest endpoint also auto-creates **incidents** when a reading crosses a safety
-threshold (e.g. high alcohol, "Drowsy" state, low visibility, overspeeding).
+**Data flow:** device → `POST /api/ingest` → MongoDB → read APIs → dashboards.
+On ingest, the API evaluates each reading against configured safety thresholds and
+records an incident whenever one is exceeded.
 
----
+## Tech Stack
 
-## 🧱 Tech stack
-
-| Layer | Tech |
-|-------|------|
+| Layer    | Technology                                              |
+| -------- | ------------------------------------------------------- |
 | Frontend | Next.js 15 (App Router), React 18, Tailwind CSS, shadcn/ui |
-| Backend | Next.js API route handlers (Node runtime) |
-| Database | MongoDB Atlas (free M0) |
-| Maps | Leaflet + OpenStreetMap (no API key, free) |
-| Device | ESP32 reference firmware (`tools/firmware`) + Node simulator |
-| Hosting | Vercel (free Hobby tier) |
+| Backend  | Next.js Route Handlers (Node.js runtime)                |
+| Database | MongoDB Atlas (free M0 tier)                            |
+| Maps     | Leaflet + OpenStreetMap (no API key required)           |
+| Device   | ESP32 reference firmware + Node.js simulator            |
+| Hosting  | Vercel (free Hobby tier)                                |
 
----
-
-## 📦 Repository layout
+## Repository Structure
 
 ```
-drishti-monitoring-dashboard-Client-Side/   # Driver dashboard + ingest + read APIs
-drishti-admin/                               # Admin panel (tickets/complaints/feedback/history)
-tools/                                       # seed.js, simulator.js, ESP32 firmware
+drishti-monitoring-dashboard-Client-Side/   Driver dashboard, ingest API, and read APIs
+drishti-admin/                              Admin panel (tickets, complaints, feedback, history)
+tools/                                      Database seeder, device simulator, and ESP32 firmware
 ```
 
----
+## Prerequisites
 
-## 🚀 Quick start (local)
+- Node.js 18 or later
+- A MongoDB Atlas account (free M0 cluster is sufficient)
 
-### 1. Database
-1. Create a free **MongoDB Atlas** M0 cluster.
-2. Add a database user and allow network access (`0.0.0.0/0` for dev).
+## Getting Started
+
+### 1. Provision the database
+
+1. Create a free MongoDB Atlas M0 cluster.
+2. Add a database user and allow network access (`0.0.0.0/0` is acceptable for local development).
 3. Copy the connection string.
 
-### 2. Client app (driver dashboard + ingest API)
+### 2. Run the client app (driver dashboard + ingest API)
+
 ```bash
 cd drishti-monitoring-dashboard-Client-Side
-cp .env.example .env.local        # set MONGODB_URI + INGEST_API_KEY
+cp .env.example .env.local        # set MONGODB_URI, MONGODB_DB, and INGEST_API_KEY
 npm install
 npm run dev                       # http://localhost:3000
 ```
 
-### 3. Seed demo data + run the simulator
+### 3. Seed demo data and start the simulator
+
 ```bash
 cd tools
-cp .env.example .env              # set MONGODB_URI, INGEST_URL, INGEST_API_KEY
+cp .env.example .env              # set MONGODB_URI, INGEST_URL, and INGEST_API_KEY
 npm install
-npm run seed                      # populate vehicles, history, tickets…
+npm run seed                      # populate vehicles, history, tickets, etc.
 npm run simulate                  # stream live readings to /api/ingest
 ```
 
-Log in at `http://localhost:3000/login` with vehicle **HR20AP1234** and watch the
-dashboard update live.
+Sign in at `http://localhost:3000/login` with vehicle number **HR20AP1234** to watch
+the dashboard update in real time.
 
-### 4. Admin app (optional, separate process)
+### 4. Run the admin app (optional)
+
 ```bash
 cd drishti-admin
-cp .env.example .env.local        # same MONGODB_URI + MONGODB_DB as the client
+cp .env.example .env.local        # use the same MONGODB_URI and MONGODB_DB as the client
 npm install
 npm run dev -- -p 3001            # http://localhost:3001
 ```
 
----
+## Deployment
 
-## ☁️ Deploy (free)
+Each application folder deploys to Vercel as an independent project:
 
-- Import each app folder into **Vercel** as its own project.
-- Set env vars in Vercel: `MONGODB_URI`, `MONGODB_DB`, and (client only) `INGEST_API_KEY`.
-- Point the simulator's `INGEST_URL` at your deployed client URL to keep the live
-  demo fresh, or run it locally during demos.
+1. Import the app folder into Vercel.
+2. Configure the required environment variables: `MONGODB_URI`, `MONGODB_DB`, and
+   (client only) `INGEST_API_KEY`.
+3. To keep a deployed demo populated with live data, point the simulator's `INGEST_URL`
+   at the deployed client URL, or run the simulator locally during demonstrations.
 
----
+## Ingest API
 
-## 🔌 Ingest API
-
-`POST /api/ingest` (header `x-ingest-key: <INGEST_API_KEY>`)
+```
+POST /api/ingest
+Header: x-ingest-key: <INGEST_API_KEY>
+Content-Type: application/json
+```
 
 ```json
 {
@@ -128,16 +145,27 @@ npm run dev -- -p 3001            # http://localhost:3001
 }
 ```
 
-All sensor blocks are optional — a real device sends whatever it has.
+All sensor blocks are optional; a device sends whatever data it has available.
 
----
+## Environment Variables
 
-## ⚠️ Notes & known simplifications
+| Variable          | Used by         | Description                                          |
+| ----------------- | --------------- | ---------------------------------------------------- |
+| `MONGODB_URI`     | client, admin, tools | MongoDB Atlas connection string                 |
+| `MONGODB_DB`      | client, admin   | Database name                                        |
+| `INGEST_API_KEY`  | client, tools   | Shared secret required by `POST /api/ingest`         |
+| `INGEST_URL`      | tools           | Target ingest endpoint for the simulator            |
 
-- **Auth is demo-grade**: login looks up a vehicle number in the `vehicles`
-  collection (no passwords). Fine for a portfolio demo; not production auth.
-- **No physical hardware required**: `tools/simulator.js` reproduces the exact data
-  path; `tools/firmware/drishti_esp32.ino` shows how real hardware would feed it.
-- **Free-tier limits apply** (Atlas storage, Vercel Hobby; Atlas may pause after long
-  inactivity — just resume it from the Atlas dashboard).
-- Secrets live only in `.env.local` / `.env` (git-ignored). Never commit them.
+Secrets are read only from `.env.local` / `.env`, both of which are git-ignored. Never
+commit them.
+
+## Notes and Limitations
+
+- **Authentication is demo-grade.** Login resolves a vehicle number against the
+  `vehicles` collection without passwords. This is suitable for a demonstration, not
+  for production use.
+- **No physical hardware is required.** `tools/simulator.js` reproduces the exact
+  device data path; `tools/firmware/drishti_esp32.ino` shows how real hardware would
+  feed the same ingest API.
+- **Free-tier limits apply.** Atlas storage and Vercel Hobby quotas are limited, and an
+  idle Atlas cluster may pause; resume it from the Atlas dashboard when needed.
