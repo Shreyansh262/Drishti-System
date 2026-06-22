@@ -30,8 +30,8 @@ export default function RootLayout({ children }) {
       <body className={`flex flex-col min-h-screen ${inter.className}`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="dark"
+          enableSystem={false}
           disableTransitionOnChange
         >
           <main className="flex-grow">{children}</main>

@@ -1,7 +1,7 @@
 "use client"
 
 import { usePathname, useRouter } from "next/navigation"
-import { Car, Gauge, History, Ticket, Phone, Settings, Plus } from "lucide-react"
+import { Gauge, History, Ticket, Phone, Settings, Plus } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -34,36 +34,41 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar variant="inset" collapsible="icon" className="bg-gray-900 text-white dark:bg-gray-950 dark:text-gray-100"> {/* Adjusted sidebar background for dark mode */}
-      <SidebarHeader className="border-b border-gray-800 dark:border-gray-700 px-4 py-3">
+    <Sidebar variant="inset" collapsible="icon" className="bg-sidebar text-sidebar-foreground">
+      <SidebarHeader className="border-b border-sidebar-border px-4 py-3">
         <div className="flex items-center gap-2">
-          <Car className="h-6 w-6 text-blue-400" />
-          <span className="font-bold text-lg group-data-[collapsible=icon]:hidden">Drishti</span>
+          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground text-sm font-semibold">
+            D
+          </span>
+          <span className="font-semibold text-base tracking-tight text-sidebar-foreground group-data-[collapsible=icon]:hidden">
+            Drishti
+          </span>
         </div>
       </SidebarHeader>
-      <SidebarContent className="flex-1 overflow-auto py-4">
+
+      <SidebarContent className="flex-1 overflow-auto py-3">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-gray-400 dark:text-gray-500 group-data-[collapsible=icon]:hidden px-4 mb-2">Main Menu</SidebarGroupLabel>
+          <SidebarGroupLabel className="px-3 text-xs font-medium uppercase tracking-wider text-sidebar-foreground/60 group-data-[collapsible=icon]:hidden">
+            Menu
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navigation.map((item) => {
                 const Icon = item.icon
                 const active = isActive(item.href)
                 return (
-                  <SidebarMenuItem key={item.href} className="px-3">
+                  <SidebarMenuItem key={item.href} className="px-2">
                     <SidebarMenuButton
                       asChild
                       tooltip={item.name}
-                      className={`
-                        text-sm transition-all rounded-lg px-3 py-2 w-full flex items-center gap-3
-                        ${active
-                          ? "bg-primary text-primary-foreground hover:bg-primary/90" // Active state
-                          : "text-gray-300 hover:bg-gray-800 hover:text-white dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-50" // Inactive state
-                        }
-                      `}
+                      className={`w-full rounded-md px-3 py-2 text-sm transition-colors ${
+                        active
+                          ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                          : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                      }`}
                     >
                       <a href={item.href} className="flex items-center gap-3 w-full">
-                        <Icon className="h-5 w-5" />
+                        <Icon className="h-4 w-4 shrink-0" />
                         <span className="group-data-[collapsible=icon]:hidden">{item.name}</span>
                       </a>
                     </SidebarMenuButton>
@@ -75,16 +80,18 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-gray-400 dark:text-gray-500 group-data-[collapsible=icon]:hidden px-4 pt-4">Quick Actions</SidebarGroupLabel>
+          <SidebarGroupLabel className="px-3 pt-2 text-xs font-medium uppercase tracking-wider text-sidebar-foreground/60 group-data-[collapsible=icon]:hidden">
+            Quick Actions
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
+              <SidebarMenuItem className="px-2">
                 <SidebarMenuButton
                   onClick={handleRaiseTicket}
                   tooltip="Raise New Ticket"
-                  className="text-sm transition-all rounded-lg px-3 py-2 w-full flex items-center gap-3 hover:bg-blue-600 text-white bg-blue-500 dark:bg-blue-700 dark:hover:bg-blue-800" // Styled button for quick action
+                  className="w-full rounded-md px-3 py-2 flex items-center gap-3 text-sm bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90 hover:text-sidebar-primary-foreground transition-colors"
                 >
-                  <Plus className="h-5 w-5" />
+                  <Plus className="h-4 w-4 shrink-0" />
                   <span className="group-data-[collapsible=icon]:hidden">Raise Ticket</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -93,7 +100,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="px-4 py-3 text-xs text-gray-500 dark:text-gray-600 group-data-[collapsible=icon]:hidden border-t border-gray-800 dark:border-gray-700"> {/* Added dark mode border */}
+      <SidebarFooter className="border-t border-sidebar-border px-4 py-3 text-xs text-sidebar-foreground/50 group-data-[collapsible=icon]:hidden">
         Drishti v1.0
       </SidebarFooter>
     </Sidebar>

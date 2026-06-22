@@ -82,17 +82,17 @@ export default function SettingsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false) // State for submission status
 
   return (
-    <div className="space-y-6 p-4 md:p-6 bg-background text-foreground"> {/* Added bg-background and text-foreground */}
-      <h1 className="text-3xl font-bold mb-6 flex items-center gap-3">
-        <Settings className="h-7 w-7 text-primary" />
-        Settings
-      </h1>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Settings</h1>
+        <p className="text-sm text-muted-foreground">Manage your preferences and notifications</p>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Dark Mode Toggle */}
-        <Card className="p-4 shadow-md bg-card text-card-foreground">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-lg font-semibold">Theme</CardTitle>
+            <CardTitle className="text-base font-semibold">Theme</CardTitle>
             <Palette className="h-5 w-5 text-muted-foreground" />
           </CardHeader>
           <CardContent className="space-y-4">
@@ -111,9 +111,9 @@ export default function SettingsPage() {
         </Card>
 
         {/* Notifications */}
-        <Card className="p-4 shadow-md bg-card text-card-foreground">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-lg font-semibold">Notifications</CardTitle>
+            <CardTitle className="text-base font-semibold">Notifications</CardTitle>
             <Bell className="h-5 w-5 text-muted-foreground" />
           </CardHeader>
           <CardContent className="space-y-4">
@@ -153,9 +153,9 @@ export default function SettingsPage() {
         </Card>
 
         {/* Data & Sync */}
-        <Card className="p-4 shadow-md bg-card text-card-foreground">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-lg font-semibold">Data & Sync</CardTitle>
+            <CardTitle className="text-base font-semibold">Data & Sync</CardTitle>
             <Shield className="h-5 w-5 text-muted-foreground" />
           </CardHeader>
           <CardContent className="space-y-4">
@@ -179,9 +179,9 @@ export default function SettingsPage() {
         </Card>
 
         {/* Language & Preferences */}
-        <Card className="p-4 shadow-md bg-card text-card-foreground">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-lg font-semibold">Preferences</CardTitle>
+            <CardTitle className="text-base font-semibold">Preferences</CardTitle>
             <Settings className="h-5 w-5 text-muted-foreground" />
           </CardHeader>
           <CardContent className="space-y-4">

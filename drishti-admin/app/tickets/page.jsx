@@ -12,7 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Progress } from "@/components/ui/progress"
 // Corrected import path for DashboardLayout
 import { DashboardLayout } from "@/components/dashboard-layout"
-import { Search, Calendar, Clock, Car, AlertTriangle, Edit, Save, X, Zap, Trophy, Target, Sparkles, History } from "lucide-react"
+import { Search, Calendar, Clock, Car, Edit, Save, X, Target, History } from "lucide-react"
 
 export default function TicketsPage() {
   const [tickets, setTickets] = useState([])
@@ -176,41 +176,42 @@ export default function TicketsPage() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Pending': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-      case 'Processing': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-      case 'Resolved': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+      case 'Pending': return 'border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400';
+      case 'Processing': return 'border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400';
+      case 'Resolved': return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400';
+      default: return 'border-border bg-muted text-muted-foreground';
     }
   }
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case 'Low': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'Medium': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-      case 'High': return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200';
-      case 'Critical': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+      case 'Low': return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400';
+      case 'Medium': return 'border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400';
+      case 'High': return 'border-orange-500/30 bg-orange-500/10 text-orange-600 dark:text-orange-400';
+      case 'Critical': return 'border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400';
+      default: return 'border-border bg-muted text-muted-foreground';
     }
   }
 
   return (
     <DashboardLayout>
-      <div className="space-y-8 p-6">
-        <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl text-gray-900 dark:text-gray-50">
-          Ticket Management
-        </h1>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Ticket Management</h1>
+          <p className="text-sm text-muted-foreground">Review and respond to vehicle tickets</p>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Left Panel: Ticket List */}
-          <Card className="md:col-span-1 shadow-lg rounded-xl flex flex-col h-full max-h-[calc(100vh-180px)]">
+          <Card className="md:col-span-1 flex flex-col h-full max-h-[calc(100vh-180px)]">
             <CardHeader className="pb-3">
-              <CardTitle className="text-2xl font-bold">All Tickets</CardTitle>
+              <CardTitle className="text-base font-semibold">All Tickets</CardTitle>
               <CardDescription>Manage and respond to vehicle tickets.</CardDescription>
               <div className="relative mt-4">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search tickets..."
-                  className="pl-10 pr-4 py-2 rounded-lg"
+                  className="pl-9"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -218,9 +219,9 @@ export default function TicketsPage() {
             </CardHeader>
             <CardContent className="flex-grow overflow-hidden">
               {loadingTickets ? (
-                <div className="flex items-center justify-center h-full">
-                  <div className="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
-                  <p className="ml-3 text-muted-foreground">Loading tickets...</p>
+                <div className="flex items-center justify-center h-full py-8">
+                  <div className="w-7 h-7 border-2 border-muted border-t-primary rounded-full animate-spin" />
+                  <p className="ml-3 text-sm text-muted-foreground">Loading tickets…</p>
                 </div>
               ) : (
                 <ScrollArea className="h-[calc(100vh-450px)] pr-4">
@@ -231,17 +232,17 @@ export default function TicketsPage() {
                       {filteredTickets.map(ticket => (
                         <Card
                           key={ticket.id} // Use ticket.id
-                          className={`cursor-pointer transition-all duration-200 ${
+                          className={`cursor-pointer transition-colors ${
                             selectedTicket?.id === ticket.id // Use ticket.id
-                              ? 'border-purple-500 ring-2 ring-purple-500 shadow-md scale-[1.01]'
-                              : 'border-transparent hover:border-gray-300 dark:hover:border-gray-700'
+                              ? 'border-primary ring-1 ring-primary'
+                              : 'hover:border-muted-foreground/30'
                           }`}
                           onClick={() => handleTicketSelect(ticket)}
                         >
                           <CardContent className="p-4">
-                            <div className="flex justify-between items-start mb-2">
-                              <h3 className="font-semibold text-base truncate">{ticket.title}</h3>
-                              <Badge className={getStatusColor(ticket.status)}>{ticket.status}</Badge>
+                            <div className="flex justify-between items-start gap-2 mb-2">
+                              <h3 className="font-medium text-sm truncate">{ticket.title}</h3>
+                              <Badge variant="outline" className={getStatusColor(ticket.status)}>{ticket.status}</Badge>
                             </div>
                             <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
                               {ticket.description}
@@ -267,10 +268,10 @@ export default function TicketsPage() {
           {/* Right Panel: Ticket Details & History */}
           <div className="md:col-span-2 space-y-6">
             {selectedTicket ? (
-              <Card className="shadow-lg rounded-xl">
+              <Card>
                 <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-2xl font-bold">{selectedTicket.title}</CardTitle>
+                  <div className="flex items-center justify-between gap-4">
+                    <CardTitle className="text-lg font-semibold">{selectedTicket.title}</CardTitle>
                     {editingTicket ? (
                       <div className="flex gap-2">
                         <Button variant="outline" size="sm" onClick={handleCancelEdit} disabled={saveStatus === 'saving'}>
@@ -279,8 +280,8 @@ export default function TicketsPage() {
                         <Button size="sm" onClick={handleSave} disabled={saveStatus === 'saving'}>
                           {saveStatus === 'saving' ? (
                             <div className="flex items-center">
-                              <div className="w-4 h-4 border-2 border-white border-t-white/30 rounded-full animate-spin mr-2" />
-                              Saving...
+                              <div className="w-4 h-4 border-2 border-primary-foreground/40 border-t-primary-foreground rounded-full animate-spin mr-2" />
+                              Saving…
                             </div>
                           ) : (
                             <>
@@ -297,29 +298,29 @@ export default function TicketsPage() {
                   </div>
                   <CardDescription className="flex items-center gap-2 text-sm">
                     <Car className="h-4 w-4" /> {selectedTicket.vehicleNumber}
-                    <Badge className={getStatusColor(selectedTicket.status)}>{selectedTicket.status}</Badge>
-                    <Badge className={getPriorityColor(selectedTicket.priority)}>{selectedTicket.priority}</Badge>
-                    {saveStatus === 'saved' && <span className="text-green-500 text-sm ml-2">Saved!</span>}
-                    {saveStatus === 'error' && <span className="text-red-500 text-sm ml-2">Save Failed!</span>}
+                    <Badge variant="outline" className={getStatusColor(selectedTicket.status)}>{selectedTicket.status}</Badge>
+                    <Badge variant="outline" className={getPriorityColor(selectedTicket.priority)}>{selectedTicket.priority}</Badge>
+                    {saveStatus === 'saved' && <span className="text-emerald-600 dark:text-emerald-400 text-sm ml-2">Saved</span>}
+                    {saveStatus === 'error' && <span className="text-destructive text-sm ml-2">Save failed</span>}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label>Ticket ID</Label>
-                      <Input value={selectedTicket.id} readOnly className="mt-1 bg-gray-50 dark:bg-gray-800" />
+                      <Input value={selectedTicket.id} readOnly className="mt-1 bg-muted" />
                     </div>
                     <div>
                       <Label>Issue Type</Label>
-                      <Input value={selectedTicket.issueType} readOnly className="mt-1 bg-gray-50 dark:bg-gray-800" />
+                      <Input value={selectedTicket.issueType} readOnly className="mt-1 bg-muted" />
                     </div>
                     <div>
                       <Label>Incident Date</Label>
-                      <Input value={new Date(selectedTicket.incidentDate).toLocaleDateString()} readOnly className="mt-1 bg-gray-50 dark:bg-gray-800" />
+                      <Input value={new Date(selectedTicket.incidentDate).toLocaleDateString()} readOnly className="mt-1 bg-muted" />
                     </div>
                     <div>
                       <Label>Incident Time</Label>
-                      <Input value={selectedTicket.incidentTime} readOnly className="mt-1 bg-gray-50 dark:bg-gray-800" />
+                      <Input value={selectedTicket.incidentTime} readOnly className="mt-1 bg-muted" />
                     </div>
                     <div>
                       <Label htmlFor="status">Status</Label>
@@ -338,7 +339,7 @@ export default function TicketsPage() {
                           </SelectContent>
                         </Select>
                       ) : (
-                        <Input value={selectedTicket.status} readOnly className="mt-1 bg-gray-50 dark:bg-gray-800" />
+                        <Input value={selectedTicket.status} readOnly className="mt-1 bg-muted" />
                       )}
                     </div>
                     <div>
@@ -359,14 +360,14 @@ export default function TicketsPage() {
                           </SelectContent>
                         </Select>
                       ) : (
-                        <Input value={selectedTicket.priority} readOnly className="mt-1 bg-gray-50 dark:bg-gray-800" />
+                        <Input value={selectedTicket.priority} readOnly className="mt-1 bg-muted" />
                       )}
                     </div>
                   </div>
 
                   <div>
                     <Label>Description</Label>
-                    <p className="text-sm mt-1">{selectedTicket.description}</p> {/* Always view-only */}
+                    <p className="text-sm mt-1 text-muted-foreground">{selectedTicket.description}</p> {/* Always view-only */}
                   </div>
 
                   <div>
@@ -382,20 +383,17 @@ export default function TicketsPage() {
                         rows={3}
                       />
                     ) : (
-                      <p className="text-sm mt-1">{selectedTicket.adminResponse || "No response yet"}</p>
+                      <p className="text-sm mt-1 text-muted-foreground">{selectedTicket.adminResponse || "No response yet"}</p>
                     )}
                   </div>
                 </CardContent>
               </Card>
             ) : (
-              <Card className="h-[400px] flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
-                <div className="text-center">
-                  <div className="w-24 h-24 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-                    <AlertTriangle className="h-12 w-12 text-white" />
-                  </div>
-                  <p className="text-lg font-medium">Select a ticket to start earning XP!</p>
-                  <p className="text-muted-foreground">
-                    Choose a ticket from the list to view details and resolve issues
+              <Card className="h-[400px] flex items-center justify-center">
+                <div className="text-center px-6">
+                  <p className="text-base font-medium text-foreground">Select a ticket to view its details</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Choose a ticket from the list to review and resolve the issue.
                   </p>
                 </div>
               </Card>
@@ -403,10 +401,10 @@ export default function TicketsPage() {
 
             {/* History Records Card */}
             {selectedTicket && (
-              <Card className="shadow-lg rounded-xl">
+              <Card>
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-2xl font-bold flex items-center gap-2">
-                    <History className="h-6 w-6" /> Related Sensor History
+                  <CardTitle className="text-base font-semibold flex items-center gap-2">
+                    <History className="h-4 w-4" /> Related Sensor History
                   </CardTitle>
                   <CardDescription>
                     Sensor data and events around the incident time (±30 min).
@@ -415,29 +413,25 @@ export default function TicketsPage() {
                 <CardContent>
                   {loadingHistory ? (
                     <div className="flex items-center justify-center h-32">
-                      <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                      <p className="ml-3 text-muted-foreground">Loading history...</p>
+                      <div className="w-7 h-7 border-2 border-muted border-t-primary rounded-full animate-spin" />
+                      <p className="ml-3 text-sm text-muted-foreground">Loading history…</p>
                     </div>
                   ) : historyRecords.length > 0 ? (
                     <ScrollArea className="h-64 pr-4">
-                      <div className="space-y-4">
+                      <div className="space-y-3">
                         {historyRecords.map((record, index) => (
-                          <div key={index} className="flex items-start gap-3 p-3 border rounded-lg bg-gray-50 dark:bg-gray-800">
+                          <div key={index} className="flex items-start gap-3 p-3 border border-border rounded-lg bg-muted/40">
                             <div className="flex-shrink-0">
-                              {record.source === 'History CSV' && <History className="h-5 w-5 text-blue-500" />}
-                              {record.source === 'OBD CSV' && <Car className="h-5 w-5 text-green-500" />}
-                              {record.source === 'Alcohol CSV' && <Zap className="h-5 w-5 text-red-500" />}
-                              {record.source === 'Drowsiness CSV' && <AlertTriangle className="h-5 w-5 text-orange-500" />}
-                              {record.source === 'Visibility CSV' && <Sparkles className="h-5 w-5 text-purple-500" />}
+                              <History className="h-4 w-4 text-muted-foreground" />
                             </div>
-                            <div className="flex-grow">
-                              <div className="flex justify-between items-center mb-1">
-                                <p className="font-medium text-sm">{record.event || record.title || record.imageName || record.category || 'Sensor Data'}</p>
-                                <p className="text-xs text-muted-foreground">
+                            <div className="flex-grow min-w-0">
+                              <div className="flex justify-between items-center gap-2 mb-1">
+                                <p className="font-medium text-sm truncate">{record.event || record.title || record.imageName || record.category || 'Sensor Data'}</p>
+                                <p className="text-xs text-muted-foreground shrink-0">
                                   {new Date(record.displayTimestamp).toLocaleString()}
                                 </p>
                               </div>
-                              <p className="text-xs text-muted-foreground mt-1 font-mono bg-gray-100 dark:bg-gray-700 p-2 rounded">
+                              <p className="text-xs text-muted-foreground mt-1 font-mono bg-muted p-2 rounded overflow-x-auto">
                                 {JSON.stringify(record, null, 2)}
                               </p>
                               <Badge variant="secondary" className="mt-2 text-xs">{record.source}</Badge>
@@ -448,8 +442,8 @@ export default function TicketsPage() {
                     </ScrollArea>
                   ) : (
                     <div className="text-center text-muted-foreground py-8">
-                      <History className="h-12 w-12 mx-auto mb-4" />
-                      <p>No related sensor history found for this ticket.</p>
+                      <History className="h-8 w-8 mx-auto mb-3" />
+                      <p className="text-sm">No related sensor history found for this ticket.</p>
                     </div>
                   )}
                 </CardContent>
@@ -457,24 +451,22 @@ export default function TicketsPage() {
             )}
 
             {/* Daily Resolution Progress */}
-            <Card className="shadow-lg rounded-xl bg-gradient-to-br from-green-50 to-teal-100 dark:from-green-950/20 dark:to-teal-950/20">
+            <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-2xl font-bold flex items-center gap-2">
-                  <Trophy className="h-6 w-6 text-green-600" /> Daily Resolution Progress
-                </CardTitle>
+                <CardTitle className="text-base font-semibold">Daily Resolution Progress</CardTitle>
                 <CardDescription>
-                  Track your progress towards daily ticket resolution targets.
+                  Tickets resolved today against the daily target.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center text-lg font-medium">
-                  <span>Tickets Resolved Today:</span>
-                  <span className="text-green-600 dark:text-green-400">{resolvedToday} / {targetResolutions}</span>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-muted-foreground">Tickets Resolved Today</span>
+                  <span className="font-medium tabular-nums text-foreground">{resolvedToday} / {targetResolutions}</span>
                 </div>
-                <Progress value={(resolvedToday / targetResolutions) * 100} className="h-4 bg-green-200 dark:bg-green-800" indicatorClassName="bg-green-600" />
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Target className="h-4 w-4" />
-                  <span>Keep up the great work!</span>
+                <Progress value={(resolvedToday / targetResolutions) * 100} className="h-2" indicatorClassName="bg-emerald-500" />
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Target className="h-3.5 w-3.5" />
+                  <span>{Math.max(targetResolutions - resolvedToday, 0)} remaining to reach target</span>
                 </div>
               </CardContent>
             </Card>

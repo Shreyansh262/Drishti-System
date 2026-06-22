@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { DashboardLayout } from "@/components/dashboard-layout"
-import { Search, Download, FileText, Calendar, Clock, Car, Zap, AlertTriangle, Sparkles, History as HistoryIcon } from "lucide-react"
+import { Search, Calendar, Clock, Car, History as HistoryIcon } from "lucide-react"
 
 export default function HistoryPage() {
   const [vehicleNumber, setVehicleNumber] = useState("")
@@ -73,32 +73,21 @@ export default function HistoryPage() {
     }
   }
 
-  const getRecordTypeColor = (type) => {
-    switch (type) {
-      case 'alert': return 'secondary';
-      case 'obd': return 'default';
-      case 'alcohol': return 'destructive';
-      case 'drowsiness': return 'warning';
-      case 'visibility': return 'info';
-      default: return 'secondary';
-    }
-  }
-
   const renderRecordDetails = (record) => {
     switch (record.source) {
       case 'History CSV':
         return (
           <>
-            {record.fault_type && <p className="text-sm text-gray-700 dark:text-gray-300">Fault Type: {record.fault_type}</p>}
-            {record.severity && <p className="text-sm text-gray-700 dark:text-gray-300">Severity: {record.severity}</p>}
-            {record.location && <p className="text-sm text-gray-700 dark:text-gray-300">Location: {record.location}</p>}
-            {record.description && <p className="text-sm text-gray-700 dark:text-gray-300">Description: {record.description}</p>}
+            {record.fault_type && <p className="text-sm text-muted-foreground">Fault Type: {record.fault_type}</p>}
+            {record.severity && <p className="text-sm text-muted-foreground">Severity: {record.severity}</p>}
+            {record.location && <p className="text-sm text-muted-foreground">Location: {record.location}</p>}
+            {record.description && <p className="text-sm text-muted-foreground">Description: {record.description}</p>}
           </>
         );
 
       default:
         return (
-          <p className="text-sm text-gray-700 dark:text-gray-300">
+          <p className="text-sm text-muted-foreground">
             Details: {record.description || record.message || "No specific details available."}
           </p>
         );
@@ -107,14 +96,15 @@ export default function HistoryPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8 p-6">
-        <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl text-gray-900 dark:text-gray-50">
-          Vehicle History Lookup
-        </h1>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Vehicle History Lookup</h1>
+          <p className="text-sm text-muted-foreground">Retrieve historical records and sensor data by vehicle</p>
+        </div>
 
-        <Card className="shadow-lg rounded-xl">
+        <Card>
           <CardHeader>
-            <CardTitle>Search Vehicle</CardTitle>
+            <CardTitle className="text-base font-semibold">Search Vehicle</CardTitle>
             <CardDescription>Enter a vehicle number to retrieve its historical data.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -135,46 +125,42 @@ export default function HistoryPage() {
               <Button onClick={handleSearch} disabled={loading || !vehicleNumber.trim()}>
                 {loading ? (
                   <div className="flex items-center">
-                    <div className="w-4 h-4 border-2 border-white border-t-white/30 rounded-full animate-spin mr-2" />
-                    Searching...
+                    <div className="w-4 h-4 border-2 border-primary-foreground/40 border-t-primary-foreground rounded-full animate-spin mr-2" />
+                    Searching…
                   </div>
                 ) : (
                   <>
-                    <Search className="h-5 w-5 mr-2" /> Search
+                    <Search className="h-4 w-4 mr-2" /> Search
                   </>
                 )}
               </Button>
             </div>
-            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+            {error && <p className="text-destructive text-sm mt-2">{error}</p>}
           </CardContent>
         </Card>
 
         {vehicleData && (
           <div className="space-y-6">
-            <Card className="shadow-lg rounded-xl">
+            <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <HistoryIcon className="h-6 w-6 text-blue-600" /> History Records for {vehicleData.vehicleNumber}
+                <CardTitle className="text-base font-semibold flex items-center gap-2">
+                  <HistoryIcon className="h-4 w-4 text-muted-foreground" /> History Records for {vehicleData.vehicleNumber}
                 </CardTitle>
                 <CardDescription>All recorded events and sensor data.</CardDescription>
               </CardHeader>
               <CardContent>
                 {vehicleData.records.length > 0 ? (
                   <ScrollArea className="h-[400px] pr-4">
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       {vehicleData.records.map((record, index) => (
-                        <Card key={index} className="p-4 flex items-start gap-3">
+                        <div key={index} className="flex items-start gap-3 rounded-lg border border-border bg-muted/40 p-4">
                           <div className="flex-shrink-0">
-                            {record.source === 'History CSV' && <HistoryIcon className="h-5 w-5 text-blue-500" />}
-                            {record.source === 'OBD CSV' && <Car className="h-5 w-5 text-green-500" />}
-                            {record.source === 'Alcohol CSV' && <Zap className="h-5 w-5 text-red-500" />}
-                            {record.source === 'Drowsiness CSV' && <AlertTriangle className="h-5 w-5 text-orange-500" />}
-                            {record.source === 'Visibility CSV' && <Sparkles className="h-5 w-5 text-purple-500" />}
+                            <HistoryIcon className="h-4 w-4 text-muted-foreground" />
                           </div>
-                          <div className="flex-grow">
-                            <div className="flex justify-between items-center mb-1">
-                              <p className="font-medium text-sm">{record.event || record.title || record.imageName || record.category || 'Sensor Data'}</p>
-                              <Badge variant={getRecordTypeColor(record.type)} className="text-xs">{record.source.replace(' CSV', '')}</Badge>
+                          <div className="flex-grow min-w-0">
+                            <div className="flex justify-between items-center gap-2 mb-1">
+                              <p className="font-medium text-sm truncate">{record.event || record.title || record.imageName || record.category || 'Sensor Data'}</p>
+                              <Badge variant="secondary" className="text-xs shrink-0">{record.source.replace(' CSV', '')}</Badge>
                             </div>
                             <p className="text-xs text-muted-foreground">
                               <Calendar className="h-3 w-3 inline-block mr-1" />
@@ -184,20 +170,20 @@ export default function HistoryPage() {
                             </p>
                             {/* Display vehicle number if available for clarity in demo */}
                             {record.vehicleNumber && record.vehicleNumber !== 'N/A' && (
-                                <p className="text-sm text-gray-600 dark:text-gray-400">Vehicle: {record.vehicleNumber}</p>
+                              <p className="text-sm text-muted-foreground">Vehicle: {record.vehicleNumber}</p>
                             )}
                             <div className="mt-2 text-sm">
-                                {renderRecordDetails(record)}
+                              {renderRecordDetails(record)}
                             </div>
                           </div>
-                        </Card>
+                        </div>
                       ))}
                     </div>
                   </ScrollArea>
                 ) : (
                   <div className="text-center text-muted-foreground py-8">
-                    <HistoryIcon className="h-12 w-12 mx-auto mb-4" />
-                    <p>No history records found for this vehicle.</p>
+                    <HistoryIcon className="h-8 w-8 mx-auto mb-3" />
+                    <p className="text-sm">No history records found for this vehicle.</p>
                   </div>
                 )}
               </CardContent>

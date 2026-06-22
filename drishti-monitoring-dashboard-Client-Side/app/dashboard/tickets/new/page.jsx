@@ -112,12 +112,12 @@ try {
         <Button variant="ghost" size="icon" onClick={() => router.back()}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-bold">Raise New Ticket</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Raise New Ticket</h1>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Report an Issue</CardTitle>
+          <CardTitle className="text-base font-semibold">Report an Issue</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

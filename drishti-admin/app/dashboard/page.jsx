@@ -1,21 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import {
-  Ticket,
-  MessageSquare,
-  Star,
-  AlertTriangle,
-  Clock,
-  CheckCircle,
-  TrendingUp,
-  Users,
-  BarChart3,
-  Activity,
-} from "lucide-react"
+import { Ticket, MessageSquare, Star, AlertTriangle } from "lucide-react"
 // Corrected import path for DashboardLayout
 import { DashboardLayout } from "@/components/dashboard-layout"
 
@@ -85,8 +73,8 @@ export default function DashboardPage() {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center h-64">
-          <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
-          <p className="ml-4 text-lg text-muted-foreground">Loading dashboard data...</p>
+          <div className="w-10 h-10 border-2 border-muted border-t-primary rounded-full animate-spin" />
+          <p className="ml-4 text-sm text-muted-foreground">Loading dashboard data…</p>
         </div>
       </DashboardLayout>
     );
@@ -95,156 +83,119 @@ export default function DashboardPage() {
   if (error) {
     return (
       <DashboardLayout>
-        <div className="flex flex-col items-center justify-center h-64 text-red-500">
-          <AlertTriangle className="w-16 h-16 mb-4" />
-          <p className="text-xl font-semibold">{error}</p>
+        <div className="flex flex-col items-center justify-center h-64 text-destructive">
+          <AlertTriangle className="w-10 h-10 mb-4" />
+          <p className="text-base font-medium">{error}</p>
         </div>
       </DashboardLayout>
     );
   }
 
+  const pct = (part, total) => (total > 0 ? (part / total) * 100 : 0)
+
   return (
     <DashboardLayout>
-      <div className="space-y-8">
-        <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl text-gray-900 dark:text-gray-50">
-          Admin Dashboard
-        </h1>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Admin Dashboard</h1>
+          <p className="text-sm text-muted-foreground">Overview of tickets, complaints, and feedback</p>
+        </div>
 
         {/* Overview Cards */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {/* Tickets Card */}
-          <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/20 dark:to-indigo-950/20 shadow-lg rounded-xl overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between pb-4">
-              <CardTitle className="text-xl font-bold text-blue-800 dark:text-blue-300">Tickets</CardTitle>
-              <div className="relative">
-                <Ticket className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-400 rounded-full animate-pulse" />
-              </div>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Tickets</CardTitle>
+              <Ticket className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="text-4xl font-bold text-blue-700 dark:text-blue-300">{stats.tickets.total}</div>
-              <div className="space-y-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Pending</span>
-                  <span className="font-semibold text-blue-600 dark:text-blue-400">{stats.tickets.pending}</span>
+            <CardContent className="space-y-4">
+              <div className="text-3xl font-semibold tabular-nums text-foreground">{stats.tickets.total}</div>
+              <div className="space-y-3">
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Pending</span>
+                    <span className="font-medium tabular-nums text-foreground">{stats.tickets.pending}</span>
+                  </div>
+                  <Progress value={pct(stats.tickets.pending, stats.tickets.total)} className="h-1.5" indicatorClassName="bg-amber-500" />
                 </div>
-                <Progress value={(stats.tickets.pending / stats.tickets.total) * 100} className="h-3 bg-blue-200 dark:bg-blue-800" indicatorClassName="bg-blue-600" />
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Processing</span>
-                  <span className="font-semibold text-indigo-600 dark:text-indigo-400">{stats.tickets.processing}</span>
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Processing</span>
+                    <span className="font-medium tabular-nums text-foreground">{stats.tickets.processing}</span>
+                  </div>
+                  <Progress value={pct(stats.tickets.processing, stats.tickets.total)} className="h-1.5" />
                 </div>
-                <Progress value={(stats.tickets.processing / stats.tickets.total) * 100} className="h-3 bg-indigo-200 dark:bg-indigo-800" indicatorClassName="bg-indigo-600" />
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Resolved</span>
-                  <span className="font-semibold text-green-600 dark:text-green-400">{stats.tickets.resolved}</span>
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Resolved</span>
+                    <span className="font-medium tabular-nums text-foreground">{stats.tickets.resolved}</span>
+                  </div>
+                  <Progress value={pct(stats.tickets.resolved, stats.tickets.total)} className="h-1.5" indicatorClassName="bg-emerald-500" />
                 </div>
-                <Progress value={(stats.tickets.resolved / stats.tickets.total) * 100} className="h-3 bg-green-200 dark:bg-green-800" indicatorClassName="bg-green-600" />
               </div>
             </CardContent>
           </Card>
 
           {/* Complaints Card */}
-          <Card className="bg-gradient-to-br from-red-50 to-orange-100 dark:from-red-950/20 dark:to-orange-950/20 shadow-lg rounded-xl overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between pb-4">
-              <CardTitle className="text-xl font-bold text-red-800 dark:text-red-300">Complaints</CardTitle>
-              <div className="relative">
-                <MessageSquare className="h-8 w-8 text-red-600 dark:text-red-400" />
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-400 rounded-full animate-pulse" />
-              </div>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Complaints</CardTitle>
+              <MessageSquare className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="text-4xl font-bold text-red-700 dark:text-red-300">{stats.complaints.total}</div>
-              <div className="space-y-4">
+            <CardContent className="space-y-4">
+              <div className="text-3xl font-semibold tabular-nums text-foreground">{stats.complaints.total}</div>
+              <div className="space-y-1.5">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Filed</span>
-                  <span className="font-semibold text-red-600 dark:text-red-400">{stats.complaints.pending}</span>
+                  <span className="text-muted-foreground">Pending</span>
+                  <span className="font-medium tabular-nums text-foreground">{stats.complaints.pending}</span>
                 </div>
-                <Progress value={(stats.complaints.pending / stats.complaints.total) * 100} className="h-3 bg-red-200 dark:bg-red-800" indicatorClassName="bg-red-600" />
-                <div className="flex gap-2">
-                  <Badge variant="secondary" className="text-xs px-3 py-1">
-                    <AlertTriangle className="w-3 h-3 mr-1" />
-                    High Priority
-                  </Badge>
-                  <Badge variant="destructive" className="text-xs px-3 py-1">
-                    <Clock className="w-3 h-3 mr-1" />
-                    Overdue
-                  </Badge>
-                </div>
+                <Progress value={pct(stats.complaints.pending, stats.complaints.total)} className="h-1.5" indicatorClassName="bg-amber-500" />
               </div>
             </CardContent>
           </Card>
 
           {/* Feedback Card */}
-          <Card className="bg-gradient-to-br from-emerald-50 to-lime-100 dark:from-emerald-950/20 dark:to-lime-950/20 shadow-lg rounded-xl overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between pb-4">
-              <CardTitle className="text-xl font-bold text-emerald-800 dark:text-emerald-300">Feedback</CardTitle>
-              <div className="relative">
-                <Star className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full animate-pulse" />
-              </div>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Feedback</CardTitle>
+              <Star className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="text-4xl font-bold text-emerald-700 dark:text-emerald-300">{stats.feedback.total}</div>
-              <div className="space-y-4">
+            <CardContent className="space-y-4">
+              <div className="text-3xl font-semibold tabular-nums text-foreground">{stats.feedback.total}</div>
+              <div className="space-y-1.5">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Satisfaction Score</span>
-                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">5/5 ⭐</span>
+                  <span className="text-muted-foreground">To Review</span>
+                  <span className="font-medium tabular-nums text-foreground">{stats.feedback.pending}</span>
                 </div>
-                <Progress value={96} className="h-3" />
-                <div className="flex gap-2">
-                  <Badge variant="secondary" className="text-xs px-3 py-1">
-                    <Clock className="w-3 h-3 mr-1" />
-                    {stats.feedback.pending} To Review
-                  </Badge>
-                  <Badge variant="default" className="text-xs px-3 py-1">
-                    <TrendingUp className="w-3 h-3 mr-1" />
-                    Trending Up
-                  </Badge>
-                </div>
+                <Progress value={pct(stats.feedback.pending, stats.feedback.total)} className="h-1.5" />
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Placeholder for Recent Activity / Charts - you can expand this later */}
+        {/* Recent Activity / Metrics */}
         <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
-          <Card className="shadow-lg rounded-xl">
+          <Card>
             <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
+              <CardTitle className="text-base font-semibold">Recent Activity</CardTitle>
               <CardDescription>Latest updates on tickets, complaints, and feedback.</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">No recent activity to display.</p>
+              <p className="text-sm text-muted-foreground">No recent activity to display.</p>
             </CardContent>
           </Card>
-          <Card className="shadow-lg rounded-xl">
+          <Card>
             <CardHeader>
-              <CardTitle>Performance Metrics</CardTitle>
+              <CardTitle className="text-base font-semibold">Performance Metrics</CardTitle>
               <CardDescription>Key performance indicators over time.</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">No metrics to display.</p>
+              <p className="text-sm text-muted-foreground">No metrics to display.</p>
             </CardContent>
           </Card>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        .animate-spin-slow {
-          animation: spin-slow 20s linear infinite;
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
-        }
-        .animate-pulse {
-          animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-      `}</style>
     </DashboardLayout>
   )
 }

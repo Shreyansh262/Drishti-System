@@ -47,53 +47,56 @@ export default function TicketsPage() {
   const getStatusIcon = (status) => {
     switch (status) {
       case "resolved":
-        return <CheckCircle className="h-4 w-4 text-green-600" />
+        return <CheckCircle className="h-4 w-4" />
       case "processing":
-        return <Clock className="h-4 w-4 text-yellow-600" />
+        return <Clock className="h-4 w-4" />
       default:
-        return <AlertCircle className="h-4 w-4 text-red-600" />
+        return <AlertCircle className="h-4 w-4" />
     }
   }
 
   const getStatusColor = (status) => {
     switch (status) {
       case "resolved":
-        return "bg-green-100 text-green-800"
+        return "bg-emerald-500 text-white"
       case "processing":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-amber-500 text-white"
       default:
-        return "bg-red-100 text-red-800"
+        return "bg-red-500 text-white"
     }
   }
 
   const getPriorityColor = (priority) => {
     switch (priority) {
       case "critical":
-        return "bg-red-100 text-red-800"
+        return "border-red-500/40 bg-red-500/10 text-red-600 dark:text-red-400"
       case "high":
-        return "bg-orange-100 text-orange-800"
+        return "border-orange-500/40 bg-orange-500/10 text-orange-600 dark:text-orange-400"
       case "medium":
-        return "bg-yellow-100 text-yellow-800"
+        return "border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400"
       default:
-        return "bg-gray-100 text-gray-800"
+        return "border-border bg-muted text-muted-foreground"
     }
   }
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-indigo-900 dark:to-purple-950">
+      <div className="flex min-h-[60vh] items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading tickets...</p>
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-muted border-t-primary mx-auto"></div>
+          <p className="mt-4 text-sm text-muted-foreground">Loading tickets…</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-indigo-900 dark:to-purple-950 p-4 md:p-6 space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Support Tickets</h1>
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Support Tickets</h1>
+          <p className="text-sm text-muted-foreground">Track and manage your reported issues</p>
+        </div>
         <Button onClick={() => router.push("/dashboard/tickets/new")}>
           <Plus className="h-4 w-4 mr-2" />
           New Ticket
@@ -103,10 +106,10 @@ export default function TicketsPage() {
       {/* Tickets List */}
       <div className="grid gap-4">
         {tickets.length === 0 ? (
-          <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-white/20 dark:border-gray-700/50 shadow-lg">
-            <CardContent className="text-center py-8">
-              <Ticket className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500 dark:text-gray-400">No tickets found</p>
+          <Card>
+            <CardContent className="text-center py-12">
+              <Ticket className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">No tickets found</p>
               <Button className="mt-4" onClick={() => router.push("/dashboard/tickets/new")}>
                 Create Your First Ticket
               </Button>
@@ -114,12 +117,12 @@ export default function TicketsPage() {
           </Card>
         ) : (
           tickets.map((ticket) => (
-            <Card key={ticket.id} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-white/20 dark:border-gray-700/50 shadow-lg hover:shadow-xl transition-shadow">
+            <Card key={ticket.id}>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg text-gray-800 dark:text-white">{ticket.title}</CardTitle>
+                <div className="flex items-center justify-between gap-4">
+                  <CardTitle className="text-base font-semibold text-foreground">{ticket.title}</CardTitle>
                   <div className="flex items-center gap-2">
-                    <Badge className={getPriorityColor(ticket.priority)}>{ticket.priority.toUpperCase()}</Badge>
+                    <Badge variant="outline" className={getPriorityColor(ticket.priority)}>{ticket.priority.toUpperCase()}</Badge>
                     <Badge className={getStatusColor(ticket.status)}>
                       {getStatusIcon(ticket.status)}
                       <span className="ml-1 capitalize">{ticket.status}</span>
@@ -128,35 +131,34 @@ export default function TicketsPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">{ticket.description}</p>
+                <p className="text-muted-foreground mb-4">{ticket.description}</p>
 
-                <div className="grid grid-cols-2 gap-4 text-sm text-gray-500 dark:text-gray-400 mb-4">
+                <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground mb-4">
                   <div>
-                    <span className="font-medium">Incident Date:</span> {ticket.incidentDate}
+                    <span className="font-medium text-foreground">Incident Date:</span> {ticket.incidentDate}
                   </div>
                   <div>
-                    <span className="font-medium">Incident Time:</span> {ticket.incidentTime}
+                    <span className="font-medium text-foreground">Incident Time:</span> {ticket.incidentTime}
                   </div>
                   <div>
-                    <span className="font-medium">Issue Type:</span> {ticket.issueType.replace("-", " ")}
+                    <span className="font-medium text-foreground">Issue Type:</span> {ticket.issueType.replace("-", " ")}
                   </div>
                   <div>
-                    <span className="font-medium">Created:</span> {new Date(ticket.createdAt).toLocaleDateString()}
+                    <span className="font-medium text-foreground">Created:</span> {new Date(ticket.createdAt).toLocaleDateString()}
                   </div>
                 </div>
 
                 {ticket.adminResponse && (
-                  <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mb-4">
-                    <p className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-1">Admin Response:</p>
-                    <p className="text-sm text-blue-700 dark:text-blue-400">{ticket.adminResponse}</p>
+                  <div className="rounded-md border border-primary/30 bg-primary/5 p-3 mb-4">
+                    <p className="text-sm font-medium text-foreground mb-1">Admin Response:</p>
+                    <p className="text-sm text-muted-foreground">{ticket.adminResponse}</p>
                   </div>
                 )}
 
                 <div className="flex justify-between items-center">
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Ticket #{ticket.id}</div>
+                  <div className="text-sm text-muted-foreground">Ticket #{ticket.id}</div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => router.push(`/dashboard/contact`)} 
-                      className="bg-white/70 dark:bg-gray-600/70 hover:bg-white dark:hover:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-700 dark:text-gray-200">
+                    <Button variant="outline" size="sm" onClick={() => router.push(`/dashboard/contact`)}>
                       Contact Us
                     </Button>
                   </div>
